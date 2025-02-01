@@ -1,7 +1,80 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Dashboard</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (authState?.User?.Identity?.IsAuthenticated ?? false)
+{
+    <div class="container">
+        <div class="card card-dark shadow-lg">
+            <div class="card-header">
+                <h2>Dashboard</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @if (IsAdmin)
+                    {
+                        <div class="col-12 mb-3">
+                            <div class="row gx-2 gy-2">
+                                <div class="col-12 col-sm-6">
+                                    <NavLink href="/orden-ingreso" class="btn btn-primary w-100 custom-btn">Crear Orden de Ingreso</NavLink>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <NavLink href="/orders" class="btn btn-primary w-100 custom-btn">Listado de Órdenes</NavLink>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="row gx-2 gy-2">
+                                <div class="col-12 col-sm-4">
+                                    <NavLink href="/productos" class="btn btn-success w-100 custom-btn">Productos</NavLink>
+                                </div>
+                                <div class="col-12 col-sm-4">
+                                    <NavLink href="/descuentos" class="btn btn-danger w-100 custom-btn">Descuentos</NavLink>
+                                </div>
+                                <div class="col-12 col-sm-4">
+                                    <NavLink href="/destinos" class="btn btn-success w-100 custom-btn">Destinos</NavLink>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="row gx-2 gy-2">
+                                <div class="col-12 col-sm-4">
+                                    <NavLink href="/clientes" class="btn btn-info w-100 custom-btn">Clientes</NavLink>
+                                </div>
+                                <div class="col-12 col-sm-4">
+                                    <NavLink href="/packing" class="btn btn-edit w-100 custom-btn">Packing</NavLink>
+                                </div>
+                                <div class="col-12 col-sm-4">
+                                    <NavLink href="/facturacion" class="btn btn-edit w-100 custom-btn">Facturación</NavLink>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="card-footer text-muted text-center">
+                &copy; 2024 FranIM. Todos los derechos reservados.
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>No tienes acceso a esta página. <NavLink href="/login">Iniciar sesión</NavLink></p>
+}
 
-Welcome to your new app.
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@code {
+    private AuthenticationState authState;
+    private bool IsAdmin;
+
+    protected override async Task OnInitializedAsync()
+    {
+        authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        IsAdmin = user.Identity?.IsAuthenticated == true && user.IsInRole("Admin");
+    }
+}
+
