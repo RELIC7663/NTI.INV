@@ -1,0 +1,46 @@
+﻿@page "/categoria/details"
+@using Microsoft.EntityFrameworkCore
+@using NTI.INV
+@inject IDbContextFactory<DBContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Categoria</h2>
+    <hr />
+    @if (categoria is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Nombre</dt>
+            <dd class="col-sm-10">@categoria.Nombre</dd>
+        </dl>
+        <div>
+            <a href="@($"/categoria/edit?idcategoria={categoria.IdCategoria}")">Edit</a> |
+            <a href="@($"/categoria")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Categoria? categoria;
+
+    [SupplyParameterFromQuery]
+    private string IdCategoria { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        categoria = await context.Categoria.FirstOrDefaultAsync(m => m.IdCategoria == IdCategoria);
+
+        if (categoria is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

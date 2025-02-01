@@ -1,0 +1,89 @@
+﻿@page "/permisos/edit"
+@using Microsoft.EntityFrameworkCore
+@using NTI.INV
+@inject IDbContextFactory<DBContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Permisos</h2>
+<hr />
+@if (Permisos is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Permisos" OnValidSubmit="UpdatePermisos" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Permisos.IdPermisos" value="@Permisos.IdPermisos" />
+                <div class="mb-3">
+                    <label for="tipopermiso" class="form-label">TipoPermiso:</label>
+                    <InputText id="tipopermiso" @bind-Value="Permisos.TipoPermiso" class="form-control" />
+                    <ValidationMessage For="() => Permisos.TipoPermiso" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/permisos">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private string IdPermisos { get; set; }
+
+    [SupplyParameterFromForm]
+    private Permisos? Permisos { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Permisos ??= await context.Permisos.FirstOrDefaultAsync(m => m.IdPermisos == IdPermisos);
+
+        if (Permisos is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdatePermisos()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Permisos!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!PermisosExists(Permisos!.IdPermisos))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/permisos");
+    }
+
+    private bool PermisosExists(string idpermisos)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Permisos.Any(e => e.IdPermisos == idpermisos);
+    }
+}

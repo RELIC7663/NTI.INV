@@ -1,0 +1,54 @@
+﻿@page "/usuarios/details"
+@using Microsoft.EntityFrameworkCore
+@using NTI.INV
+@inject IDbContextFactory<DBContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Usuarios</h2>
+    <hr />
+    @if (usuarios is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Nombre</dt>
+            <dd class="col-sm-10">@usuarios.Nombre</dd>
+            <dt class="col-sm-2">Correo</dt>
+            <dd class="col-sm-10">@usuarios.Correo</dd>
+            <dt class="col-sm-2">Usuario</dt>
+            <dd class="col-sm-10">@usuarios.Usuario</dd>
+            <dt class="col-sm-2">Password</dt>
+            <dd class="col-sm-10">@usuarios.Password</dd>
+            <dt class="col-sm-2">IdPermisos</dt>
+            <dd class="col-sm-10">@usuarios.IdPermisos</dd>
+        </dl>
+        <div>
+            <a href="@($"/usuarios/edit?codigo={usuarios.Codigo}")">Edit</a> |
+            <a href="@($"/usuarios")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Usuarios? usuarios;
+
+    [SupplyParameterFromQuery]
+    private string Codigo { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        usuarios = await context.Usuarios.FirstOrDefaultAsync(m => m.Codigo == Codigo);
+
+        if (usuarios is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

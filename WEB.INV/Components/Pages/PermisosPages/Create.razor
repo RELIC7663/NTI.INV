@@ -1,0 +1,49 @@
+﻿@page "/permisos/create"
+@using Microsoft.EntityFrameworkCore
+@using NTI.INV
+@inject IDbContextFactory<DBContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Permisos</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Permisos" OnValidSubmit="AddPermisos" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="IdPermisos" class="form-label">IdPermisos:</label>
+                <InputText id="IdPermisos" @bind-Value="Permisos.IdPermisos" class="form-control" />
+                <ValidationMessage For="() => Permisos.IdPermisos" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="tipopermiso" class="form-label">TipoPermiso:</label> 
+                <InputText id="tipopermiso" @bind-Value="Permisos.TipoPermiso" class="form-control" /> 
+                <ValidationMessage For="() => Permisos.TipoPermiso" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/permisos">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Permisos Permisos { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddPermisos()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Permisos.Add(Permisos);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/permisos");
+    }
+}

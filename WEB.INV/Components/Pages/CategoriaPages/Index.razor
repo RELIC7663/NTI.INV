@@ -1,0 +1,35 @@
+﻿@page "/categoria"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using NTI.INV
+@implements IAsyncDisposable
+@inject IDbContextFactory<DBContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="categoria/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Categoria">
+    <PropertyColumn Property="categoria => categoria.Nombre" />
+
+    <TemplateColumn Context="categoria">
+        <a href="@($"categoria/edit?idcategoria={categoria.IdCategoria}")">Edit</a> |
+        <a href="@($"categoria/details?idcategoria={categoria.IdCategoria}")">Details</a> |
+        <a href="@($"categoria/delete?idcategoria={categoria.IdCategoria}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private DBContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

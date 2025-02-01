@@ -1,0 +1,69 @@
+﻿@page "/usuarios/create"
+@using Microsoft.EntityFrameworkCore
+@using NTI.INV
+@inject IDbContextFactory<DBContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Usuarios</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Usuarios" OnValidSubmit="AddUsuarios" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="Codigo" class="form-label">Codigo:</label>
+                <InputText id="Codigo" @bind-Value="Usuarios.Codigo" class="form-control" />
+                <ValidationMessage For="() => Usuarios.Codigo" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre:</label> 
+                <InputText id="nombre" @bind-Value="Usuarios.Nombre" class="form-control" /> 
+                <ValidationMessage For="() => Usuarios.Nombre" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="correo" class="form-label">Correo:</label> 
+                <InputText id="correo" @bind-Value="Usuarios.Correo" class="form-control" /> 
+                <ValidationMessage For="() => Usuarios.Correo" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="usuario" class="form-label">Usuario:</label> 
+                <InputText id="usuario" @bind-Value="Usuarios.Usuario" class="form-control" /> 
+                <ValidationMessage For="() => Usuarios.Usuario" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label> 
+                <InputText id="password" @bind-Value="Usuarios.Password" class="form-control" /> 
+                <ValidationMessage For="() => Usuarios.Password" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="idpermisos" class="form-label">IdPermisos:</label> 
+                <InputText id="idpermisos" @bind-Value="Usuarios.IdPermisos" class="form-control" /> 
+                <ValidationMessage For="() => Usuarios.IdPermisos" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/usuarios">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Usuarios Usuarios { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddUsuarios()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Usuarios.Add(Usuarios);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/usuarios");
+    }
+}
