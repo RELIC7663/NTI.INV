@@ -1,6 +1,7 @@
 using WEB.INV.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
 
 namespace WEB.INV
 {
@@ -12,7 +13,15 @@ namespace WEB.INV
             builder.Services.AddDbContextFactory<DBContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DBContext") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
 
+            
+
+            builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<DBContext>();
+
+            builder.Services.AddAuthentication();
+
             builder.Services.AddQuickGridEntityFrameworkAdapter();
+
+            
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -28,13 +37,15 @@ namespace WEB.INV
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-    app.UseMigrationsEndPoint();
+                app.UseMigrationsEndPoint();
             }
 
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
             app.UseAntiforgery();
+
+            app.MapGroup("/Identity").MapIdentityApi<IdentityUser>();
 
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
