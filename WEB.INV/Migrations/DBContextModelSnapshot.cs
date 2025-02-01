@@ -229,7 +229,7 @@ namespace WEB.INV.Migrations
 
                     b.HasKey("IdCategoria");
 
-                    b.ToTable("Categoria");
+                    b.ToTable("Categoria", (string)null);
                 });
 
             modelBuilder.Entity("NTI.INV.Permisos", b =>
@@ -242,7 +242,7 @@ namespace WEB.INV.Migrations
 
                     b.HasKey("IdPermisos");
 
-                    b.ToTable("Permisos");
+                    b.ToTable("Permisos", (string)null);
                 });
 
             modelBuilder.Entity("NTI.INV.Productos", b =>
@@ -266,7 +266,7 @@ namespace WEB.INV.Migrations
 
                     b.HasIndex("IdCategoria");
 
-                    b.ToTable("Productos");
+                    b.ToTable("Productos", (string)null);
                 });
 
             modelBuilder.Entity("NTI.INV.Usuarios", b =>
@@ -293,7 +293,7 @@ namespace WEB.INV.Migrations
 
                     b.HasIndex("IdPermisos");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
