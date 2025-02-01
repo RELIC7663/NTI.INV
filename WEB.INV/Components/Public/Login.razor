@@ -13,17 +13,17 @@
 
             <div class="mb-3">
                 <label for="username" class="form-label">Usuario</label>
-                <InputText id="username" class="form-control" @bind-Value="loginModel.username" required />
+                <InputText id="username" class="form-control" @bind-Value="loginModel.Username" required />
             </div>
 
             <div class="mb-3">
                 <label for="email" class="form-label">Correo Electrónico</label>
-                <InputText id="email" class="form-control" type="email" @bind-Value="loginModel.email" required />
+                <InputText id="email" class="form-control" type="email" @bind-Value="loginModel.Email" required />
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña</label>
-                <InputText id="password" class="form-control" type="password" @bind-Value="loginModel.password" required />
+                <InputText id="password" class="form-control" type="password" @bind-Value="loginModel.Password" required />
             </div>
 
             <button type="submit" class="btn btn-primary w-100">Ingresar</button>
@@ -35,13 +35,6 @@
 
 @code {
     private LoginModel loginModel = new LoginModel();
-
-    public class LoginModel
-    {
-        public string username { get; set; } = string.Empty;
-        public string password { get; set; } = string.Empty;
-        public string email { get; set; } = string.Empty;
-    }
 
     private async Task HandleLogin()
     {
@@ -55,7 +48,7 @@
             {
                 var token = await response.Content.ReadAsStringAsync();
                 Console.WriteLine("Token recibido: " + token);
-                //Navigation.NavigateTo("/"); // Redirige después del login
+                Navigation.NavigateTo("/"); // Redirige después del login
             }
             else
             {
@@ -68,5 +61,10 @@
         }
     }
 
-    
+    public class LoginModel
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+    }
 }

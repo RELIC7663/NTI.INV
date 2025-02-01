@@ -11,7 +11,7 @@ namespace WEB.INV
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContextFactory<DBContext>(options =>
-                options.UseSqlite(builder.Configuration.GetConnectionString("DBContext") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext") ?? throw new InvalidOperationException("Connection string 'DBContext' not found.")));
 
             builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<DBContext>();
 
