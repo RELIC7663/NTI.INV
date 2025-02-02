@@ -1,0 +1,78 @@
+﻿@page "/register"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<h3 class="text-center">Registro de Usuario</h3>
+
+<div class="container d-flex justify-content-center align-items-center vh-10">
+    <div class="card shadow-lg p-4" style="width: 400px;">
+
+        <EditForm Model="registerModel" OnValidSubmit="HandleRegister" FormName="registerForm">
+
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label for="username" class="form-label">Nombre de Usuario</label>
+                <InputText id="username" class="form-control" @bind-Value="registerModel.Username" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <InputText id="email" class="form-control" type="email" @bind-Value="registerModel.Email" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <InputText id="password" class="form-control" type="password" @bind-Value="registerModel.Password" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+                <InputText id="confirmPassword" class="form-control" type="password" @bind-Value="registerModel.ConfirmPassword" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+        </EditForm>
+
+        <div class="text-center mt-3">
+            <a href="/login">¿Ya tienes una cuenta? Inicia sesión</a>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private RegisterModel registerModel { get; set; } = new();
+
+    private async Task HandleRegister()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("https://utnserver2024-b3erdkfghkaaf5bu.canadacentral-01.azurewebsites.net/identity/register", registerModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Usuario registrado correctamente");
+                Navigation.NavigateTo("/login"); // Redirige al login después del registro
+            }
+            else
+            {
+                Console.WriteLine("Error en el registro");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
+    }
+
+    public class RegisterModel
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string ConfirmPassword { get; set; } = string.Empty;
+    }
+}

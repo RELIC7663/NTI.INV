@@ -47,6 +47,7 @@ namespace WEB.INV
 
             app.MapGroup("/Identity").MapIdentityApi<IdentityUser>();
 
+
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
 
