@@ -1,35 +1,47 @@
 ﻿@page "/categoria"
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
-@using NTI.INV
-@implements IAsyncDisposable
+@using WEB.INT
 @inject IDbContextFactory<DBContext> DbFactory
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Categorías</PageTitle>
 
-<h1>Index</h1>
+<h1>Categorías</h1>
 
 <p>
-    <a href="categoria/create">Create New</a>
+    <a href="categoria/create">Crear Nueva</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Categoria">
-    <PropertyColumn Property="categoria => categoria.Nombre" />
+@if (categorias is null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <QuickGrid Class="table" Items="categorias?.AsQueryable()">
 
-    <TemplateColumn Context="categoria">
-        <a href="@($"categoria/edit?idcategoria={categoria.IdCategoria}")">Edit</a> |
-        <a href="@($"categoria/details?idcategoria={categoria.IdCategoria}")">Details</a> |
-        <a href="@($"categoria/delete?idcategoria={categoria.IdCategoria}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
+        <PropertyColumn Property="categoria => categoria.Nombre" />
+
+        <TemplateColumn Context="categoria">
+            <a href="@($"categoria/edit?idcategoria={categoria.IdCategoria}")">Editar</a> |
+            <a href="@($"categoria/details?idcategoria={categoria.IdCategoria}")">Detalles</a> |
+            <a href="@($"categoria/delete?idcategoria={categoria.IdCategoria}")">Eliminar</a>
+        </TemplateColumn>
+    </QuickGrid>
+}
 
 @code {
-    private DBContext context = default!;
+    private List<Categoria>? categorias;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        context = DbFactory.CreateDbContext();
+        await LoadCategoriasAsync();
     }
 
-    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+    private async Task LoadCategoriasAsync()
+    {
+        await using var context = await DbFactory.CreateDbContextAsync(); //  Crea un nuevo DbContext para cada operación
+        categorias = await context.Categoria.ToListAsync();
+        StateHasChanged(); // Actualiza la UI
+    }
 }

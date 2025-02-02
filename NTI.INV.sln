@@ -3,12 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NTI.INV", "NTI.INV\NTI.INV.csproj", "{BB468FC8-DE16-47EF-AEB7-64AB896BC3F9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WEB.INV", "WEB.INV\WEB.INV.csproj", "{74C1A319-FB10-4DA8-9671-2AED8D7AC622}"
-	ProjectSection(ProjectDependencies) = postProject
-		{BB468FC8-DE16-47EF-AEB7-64AB896BC3F9} = {BB468FC8-DE16-47EF-AEB7-64AB896BC3F9}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BB468FC8-DE16-47EF-AEB7-64AB896BC3F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BB468FC8-DE16-47EF-AEB7-64AB896BC3F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BB468FC8-DE16-47EF-AEB7-64AB896BC3F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BB468FC8-DE16-47EF-AEB7-64AB896BC3F9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{74C1A319-FB10-4DA8-9671-2AED8D7AC622}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{74C1A319-FB10-4DA8-9671-2AED8D7AC622}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74C1A319-FB10-4DA8-9671-2AED8D7AC622}.Release|Any CPU.ActiveCfg = Release|Any CPU
