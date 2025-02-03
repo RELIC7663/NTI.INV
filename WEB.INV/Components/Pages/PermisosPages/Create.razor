@@ -4,34 +4,44 @@
 @inject IDbContextFactory<DBContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Create</PageTitle>
+<PageTitle>Crear Permiso</PageTitle>
 
-<h1>Create</h1>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Crear Nuevo Permiso</h3>
+        </div>
+        <div class="card-body">
+            <EditForm method="post" Model="Permisos" OnValidSubmit="AddPermisos" FormName="create" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary class="alert alert-danger" role="alert" />
 
-<h2>Permisos</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <EditForm method="post" Model="Permisos" OnValidSubmit="AddPermisos" FormName="create" Enhance>
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="mb-3">
-                <label for="IdPermisos" class="form-label">IdPermisos:</label>
-                <InputText id="IdPermisos" @bind-Value="Permisos.IdPermisos" class="form-control" />
-                <ValidationMessage For="() => Permisos.IdPermisos" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="tipopermiso" class="form-label">TipoPermiso:</label> 
-                <InputText id="tipopermiso" @bind-Value="Permisos.TipoPermiso" class="form-control" /> 
-                <ValidationMessage For="() => Permisos.TipoPermiso" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
+                <!-- Campo ID Permisos -->
+                <div class="mb-3">
+                    <label for="IdPermisos" class="form-label">ID Permisos:</label>
+                    <InputText id="IdPermisos" @bind-Value="Permisos.IdPermisos" class="form-control" placeholder="Ingrese el ID del permiso" />
+                    <ValidationMessage For="() => Permisos.IdPermisos" class="text-danger" />
+                </div>
+
+                <!-- Campo Tipo de Permiso -->
+                <div class="mb-3">
+                    <label for="tipopermiso" class="form-label">Tipo de Permiso:</label>
+                    <InputText id="tipopermiso" @bind-Value="Permisos.TipoPermiso" class="form-control" placeholder="Ingrese el tipo de permiso" />
+                    <ValidationMessage For="() => Permisos.TipoPermiso" class="text-danger" />
+                </div>
+
+                <!-- Botones -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Crear
+                    </button>
+                    <a href="/permisos" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
+                </div>
+            </EditForm>
+        </div>
     </div>
-</div>
-
-<div>
-    <a href="/permisos">Back to List</a>
 </div>
 
 @code {

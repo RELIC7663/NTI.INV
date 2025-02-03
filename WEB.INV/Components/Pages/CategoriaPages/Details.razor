@@ -4,27 +4,41 @@
 @inject IDbContextFactory<DBContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
+<PageTitle>Detalles de Categoría</PageTitle>
 
-<h1>Details</h1>
-
-<div>
-    <h2>Categoria</h2>
-    <hr />
-    @if (categoria is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">Nombre</dt>
-            <dd class="col-sm-10">@categoria.Nombre</dd>
-        </dl>
-        <div>
-            <a href="@($"/categoria/edit?idcategoria={categoria.IdCategoria}")">Edit</a> |
-            <a href="@($"/categoria")">Back to List</a>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Detalles de la Categoría</h3>
         </div>
-    }
+        <div class="card-body">
+            @if (categoria is null)
+            {
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="mt-2"><em>Cargando...</em></p>
+                </div>
+            }
+            else
+            {
+                <dl class="row">
+                    <dt class="col-sm-3 font-weight-bold">Nombre:</dt>
+                    <dd class="col-sm-9">@categoria.Nombre</dd>
+                </dl>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="@($"/categoria/edit?idcategoria={categoria.IdCategoria}")" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="/categoria" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
 </div>
 
 @code {

@@ -2,6 +2,7 @@ using WEB.INV.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
+using Blazored.LocalStorage;
 
 namespace WEB.INV
 {
@@ -21,6 +22,7 @@ namespace WEB.INV
 
             builder.Services.AddHttpClient();
 
+            builder.Services.AddBlazoredLocalStorage();
 
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();

@@ -4,56 +4,77 @@
 @inject IDbContextFactory<DBContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Create</PageTitle>
+<PageTitle>Crear Producto</PageTitle>
 
-<h1>Create</h1>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Crear Nuevo Producto</h3>
+        </div>
+        <div class="card-body">
+            <EditForm method="post" Model="Productos" OnValidSubmit="AddProductos" FormName="create" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary class="alert alert-danger" role="alert" />
 
-<h2>Productos</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <EditForm method="post" Model="Productos" OnValidSubmit="AddProductos" FormName="create" Enhance>
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="mb-3">
-                <label for="Codigo" class="form-label">Codigo:</label>
-                <InputText id="Codigo" @bind-Value="Productos.Codigo" class="form-control" />
-                <ValidationMessage For="() => Productos.Codigo" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre:</label> 
-                <InputText id="nombre" @bind-Value="Productos.Nombre" class="form-control" /> 
-                <ValidationMessage For="() => Productos.Nombre" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="idcategoria" class="form-label">IdCategoria:</label> 
-                <InputText id="idcategoria" @bind-Value="Productos.IdCategoria" class="form-control" /> 
-                <ValidationMessage For="() => Productos.IdCategoria" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="precio" class="form-label">Precio:</label> 
-                <InputNumber id="precio" @bind-Value="Productos.Precio" class="form-control" /> 
-                <ValidationMessage For="() => Productos.Precio" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="stock" class="form-label">Stock:</label> 
-                <InputNumber id="stock" @bind-Value="Productos.Stock" class="form-control" /> 
-                <ValidationMessage For="() => Productos.Stock" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
+                <div class="row">
+                    <!-- Código -->
+                    <div class="col-md-6 mb-3">
+                        <label for="Codigo" class="form-label">Código:</label>
+                        <InputText id="Codigo" @bind-Value="Productos.Codigo" class="form-control " placeholder="Ingrese el código" />
+                        <ValidationMessage For="() => Productos.Codigo" class="text-danger" />
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="col-md-6 mb-3">
+                        <label for="nombre" class="form-label">Nombre:</label>
+                        <InputText id="nombre" @bind-Value="Productos.Nombre" class="form-control " placeholder="Ingrese el nombre del producto" />
+                        <ValidationMessage For="() => Productos.Nombre" class="text-danger" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- IdCategoria -->
+                    <div class="col-md-6 mb-3">
+                        <label for="idcategoria" class="form-label">Categoría:</label>
+                        <InputText id="idcategoria" @bind-Value="Productos.IdCategoria" class="form-control " placeholder="Ingrese el ID de la categoría" />
+                        <ValidationMessage For="() => Productos.IdCategoria" class="text-danger" />
+                    </div>
+
+                    <!-- Precio -->
+                    <div class="col-md-6 mb-3">
+                        <label for="precio" class="form-label">Precio:</label>
+                        <InputNumber id="precio" @bind-Value="Productos.Precio" class="form-control " placeholder="Ingrese el precio" />
+                        <ValidationMessage For="() => Productos.Precio" class="text-danger" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Stock -->
+                    <div class="col-md-6 mb-3">
+                        <label for="stock" class="form-label">Stock:</label>
+                        <InputNumber id="stock" @bind-Value="Productos.Stock" class="form-control " placeholder="Ingrese el stock disponible" />
+                        <ValidationMessage For="() => Productos.Stock" class="text-danger" />
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-primary ">
+                        <i class="fas fa-save"></i> Crear
+                    </button>
+                    <a href="/productos" class="btn btn-secondary ">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
+                </div>
+            </EditForm>
+        </div>
     </div>
-</div>
-
-<div>
-    <a href="/productos">Back to List</a>
 </div>
 
 @code {
     [SupplyParameterFromForm]
     private Productos Productos { get; set; } = new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddProductos()
     {
         using var context = DbFactory.CreateDbContext();

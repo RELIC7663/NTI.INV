@@ -4,40 +4,58 @@
 @inject IDbContextFactory<DBContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
+<PageTitle>Detalles del Producto</PageTitle>
 
-<h1>Details</h1>
-
-<div>
-    <h2>Productos</h2>
-    <hr />
-    @if (productos is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">Nombre</dt>
-            <dd class="col-sm-10">@productos.Nombre</dd>
-            <dt class="col-sm-2">IdCategoria</dt>
-            <dd class="col-sm-10">@productos.IdCategoria</dd>
-            <dt class="col-sm-2">Precio</dt>
-            <dd class="col-sm-10">@productos.Precio</dd>
-            <dt class="col-sm-2">Stock</dt>
-            <dd class="col-sm-10">@productos.Stock</dd>
-        </dl>
-        <div>
-            <a href="@($"/productos/edit?codigo={productos.Codigo}")">Edit</a> |
-            <a href="@($"/productos")">Back to List</a>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-info text-white">
+            <h3 class="mb-0">Detalles del Producto</h3>
         </div>
-    }
+        <div class="card-body">
+            @if (productos is null)
+            {
+                <div class="text-center">
+                    <div class="spinner-border text-info" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="mt-2"><em>Cargando datos...</em></p>
+                </div>
+            }
+            else
+            {
+                <dl class="row">
+                    <dt class="col-sm-3 font-weight-bold">Nombre:</dt>
+                    <dd class="col-sm-9">@productos.Nombre</dd>
+
+                    <dt class="col-sm-3 font-weight-bold">ID Categoría:</dt>
+                    <dd class="col-sm-9">@productos.IdCategoria</dd>
+
+                    <dt class="col-sm-3 font-weight-bold">Precio:</dt>
+                    <dd class="col-sm-9">@((productos.Precio as decimal?)?.ToString("C") ?? "No disponible")</dd>
+
+
+                    <dt class="col-sm-3 font-weight-bold">Stock:</dt>
+                    <dd class="col-sm-9">@productos.Stock</dd>
+                </dl>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="@($"/productos/edit?codigo={productos.Codigo}")" class="btn btn-warning ">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="/productos" class="btn btn-secondary ">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
 </div>
 
 @code {
     private Productos? productos;
 
     [SupplyParameterFromQuery]
-    private string Codigo { get; set; }
+    private string Codigo { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {

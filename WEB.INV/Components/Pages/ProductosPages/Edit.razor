@@ -4,101 +4,88 @@
 @inject IDbContextFactory<DBContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Edit</PageTitle>
+<PageTitle>Editar Producto</PageTitle>
 
-<h1>Edit</h1>
-
-<h2>Productos</h2>
-<hr />
-@if (Productos is null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <div class="row">
-        <div class="col-md-4">
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-warning text-dark">
+            <h3 class="mb-0">Editar Producto</h3>
+        </div>
+        <div class="card-body">
             <EditForm method="post" Model="Productos" OnValidSubmit="UpdateProductos" FormName="edit" Enhance>
                 <DataAnnotationsValidator />
-                <ValidationSummary role="alert"/>
-                <input type="hidden" name="Productos.Codigo" value="@Productos.Codigo" />
-                <div class="mb-3">
-                    <label for="nombre" class="form-label">Nombre:</label>
-                    <InputText id="nombre" @bind-Value="Productos.Nombre" class="form-control" />
-                    <ValidationMessage For="() => Productos.Nombre" class="text-danger" />
+                <ValidationSummary class="alert alert-danger" role="alert" />
+
+                <div class="row">
+                    <!-- Nombre -->
+                    <div class="col-md-6 mb-3">
+                        <label for="nombre" class="form-label">Nombre:</label>
+                        <InputText id="nombre" @bind-Value="Productos.Nombre" class="form-control " placeholder="Ingrese el nombre del producto" />
+                        <ValidationMessage For="() => Productos.Nombre" class="text-danger" />
+                    </div>
+
+                    <!-- IdCategoria -->
+                    <div class="col-md-6 mb-3">
+                        <label for="idcategoria" class="form-label">Categoría:</label>
+                        <InputText id="idcategoria" @bind-Value="Productos.IdCategoria" class="form-control " placeholder="Ingrese el ID de la categoría" />
+                        <ValidationMessage For="() => Productos.IdCategoria" class="text-danger" />
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="idcategoria" class="form-label">IdCategoria:</label>
-                    <InputText id="idcategoria" @bind-Value="Productos.IdCategoria" class="form-control" />
-                    <ValidationMessage For="() => Productos.IdCategoria" class="text-danger" />
+
+                <div class="row">
+                    <!-- Precio -->
+                    <div class="col-md-6 mb-3">
+                        <label for="precio" class="form-label">Precio:</label>
+                        <InputNumber id="precio" @bind-Value="Productos.Precio" class="form-control " placeholder="Ingrese el precio" />
+                        <ValidationMessage For="() => Productos.Precio" class="text-danger" />
+                    </div>
+
+                    <!-- Stock -->
+                    <div class="col-md-6 mb-3">
+                        <label for="stock" class="form-label">Stock:</label>
+                        <InputNumber id="stock" @bind-Value="Productos.Stock" class="form-control " placeholder="Ingrese el stock disponible" />
+                        <ValidationMessage For="() => Productos.Stock" class="text-danger" />
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="precio" class="form-label">Precio:</label>
-                    <InputNumber id="precio" @bind-Value="Productos.Precio" class="form-control" />
-                    <ValidationMessage For="() => Productos.Precio" class="text-danger" />
+
+                <!-- Botones -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-primary ">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                    <a href="/productos" class="btn btn-secondary ">
+                        <i class="fas fa-arrow-left"></i> Volver a la lista
+                    </a>
                 </div>
-                <div class="mb-3">
-                    <label for="stock" class="form-label">Stock:</label>
-                    <InputNumber id="stock" @bind-Value="Productos.Stock" class="form-control" />
-                    <ValidationMessage For="() => Productos.Stock" class="text-danger" />
-                </div>
-                <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
         </div>
     </div>
-}
-
-<div>
-    <a href="/productos">Back to List</a>
 </div>
 
 @code {
     [SupplyParameterFromQuery]
-    private string Codigo { get; set; }
+    private string Codigo { get; set; } = default!;
 
     [SupplyParameterFromForm]
-    private Productos? Productos { get; set; }
+    private Productos Productos { get; set; } = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        using var context = DbFactory.CreateDbContext();
-        Productos ??= await context.Productos.FirstOrDefaultAsync(m => m.Codigo == Codigo);
-
-        if (Productos is null)
-        {
-            NavigationManager.NavigateTo("notfound");
-        }
-    }
-
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task UpdateProductos()
     {
         using var context = DbFactory.CreateDbContext();
-        context.Attach(Productos!).State = EntityState.Modified;
+        var productoExistente = await context.Productos.FindAsync(Codigo);
 
-        try
+        if (productoExistente is null)
         {
-            await context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!ProductosExists(Productos!.Codigo))
-            {
-                NavigationManager.NavigateTo("notfound");
-            }
-            else
-            {
-                throw;
-            }
+            NavigationManager.NavigateTo("notfound");
+            return;
         }
 
+        productoExistente.Nombre = Productos.Nombre;
+        productoExistente.IdCategoria = Productos.IdCategoria;
+        productoExistente.Precio = Productos.Precio;
+        productoExistente.Stock = Productos.Stock;
+
+        await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/productos");
-    }
-
-    private bool ProductosExists(string codigo)
-    {
-        using var context = DbFactory.CreateDbContext();
-        return context.Productos.Any(e => e.Codigo == codigo);
     }
 }

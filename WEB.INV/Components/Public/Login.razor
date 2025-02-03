@@ -1,12 +1,14 @@
 ﻿@page "/login"
 @inject HttpClient Http
-@inject NavigationManager Navigation
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
 
 <h3 class="text-center">Iniciar Sesión</h3>
 
 <div class="container d-flex justify-content-center align-items-center vh-10">
     <div class="card shadow-lg p-4" style="width: 400px;">
-
         <EditForm Model="loginModel" OnValidSubmit="HandleLogin" FormName="loginForm">
             <DataAnnotationsValidator />
             <ValidationSummary />
@@ -23,27 +25,38 @@
 
             <button type="submit" class="btn btn-primary w-100">Ingresar</button>
         </EditForm>
-
-
     </div>
 </div>
 
 @code {
     [SupplyParameterFromForm]
-    private LoginModel loginModel = new LoginModel();
+    private LoginModel loginModel { get; set; } = new();
+
+    private TokenResponse? _tokenResponse;
+    private string? _pendingAuthToken;
+
 
     private async Task HandleLogin()
     {
         try
         {
-            
-            var response = await Http.PostAsJsonAsync("https://utnserver2024-b3erdkfghkaaf5bu.canadacentral-01.azurewebsites.net/", loginModel);
+            var response = await Http.PostAsJsonAsync("https://utnserver2024-b3erdkfghkaaf5bu.canadacentral-01.azurewebsites.net/identity/login", loginModel);
 
             if (response.IsSuccessStatusCode)
             {
-                var token = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("Token recibido: " + token);
-                Navigation.NavigateTo("/"); // Redirige después del login
+                _tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
+                Console.WriteLine("Token recibido: " + _tokenResponse?.AccessToken);
+
+                if (_tokenResponse?.AccessToken is not null)
+                {
+                    // Set token in LocalStorage and re-render the page
+
+                    Console.WriteLine("Token guardado en LocalStorage.");
+
+                    _pendingAuthToken = _tokenResponse.AccessToken;
+
+
+                }
             }
             else
             {
@@ -54,15 +67,29 @@
         {
             Console.WriteLine("Error: " + ex.Message);
         }
+        
+
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_pendingAuthToken is not null)
+        {
+            await ProtectedSessionStore.SetAsync("authToken", _pendingAuthToken);
+            _pendingAuthToken = null; // Evita llamadas repetitivas
+            StateHasChanged(); // Vuelve a renderizar el componente si es necesario
+        }
+    }
+
+    
+    public class TokenResponse
+    {
+        public string AccessToken { get; set; } = string.Empty;
     }
 
     public class LoginModel
     {
-        
         public string Password { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
     }
-
-
-
 }
