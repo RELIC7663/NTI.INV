@@ -2,46 +2,57 @@
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using WEB.INT
+@implements IAsyncDisposable
 @inject IDbContextFactory<DBContext> DbFactory
 
 <PageTitle>Categorías</PageTitle>
 
-<h1>Categorías</h1>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Listado de Categorías</h3>
+        </div>
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
+                <p class="text-muted">Aquí puedes administrar las categorías registradas en el sistema.</p>
+                <a href="categoria/create" class="btn btn-success ">
+                    <i class="fas fa-plus"></i> Crear Nueva
+                </a>
+            </div>
 
-<p>
-    <a href="categoria/create">Crear Nueva</a>
-</p>
+            <QuickGrid Class="table table-striped table-hover text-center" Items="context.Categoria">
+                <!-- Se agrega una columna para mostrar el ID de la Categoría -->
+                <PropertyColumn Title="ID" Property="categoria => categoria.IdCategoria" />
 
-@if (categorias is null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <QuickGrid Class="table" Items="categorias?.AsQueryable()">
+                <!-- Columna para mostrar el Nombre de la Categoría -->
+                <PropertyColumn Title="Nombre" Property="categoria => categoria.Nombre" />
 
-        <PropertyColumn Property="categoria => categoria.Nombre" />
-
-        <TemplateColumn Context="categoria">
-            <a href="@($"categoria/edit?idcategoria={categoria.IdCategoria}")">Editar</a> |
-            <a href="@($"categoria/details?idcategoria={categoria.IdCategoria}")">Detalles</a> |
-            <a href="@($"categoria/delete?idcategoria={categoria.IdCategoria}")">Eliminar</a>
-        </TemplateColumn>
-    </QuickGrid>
-}
+                <!-- Botones dentro de la fila con separación y bordes redondeados -->
+                <TemplateColumn Context="categoria">
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="@($"categoria/edit?idcategoria={categoria.IdCategoria}")" class="btn btn-warning ">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a href="@($"categoria/details?idcategoria={categoria.IdCategoria}")" class="btn btn-info ">
+                            <i class="fas fa-eye"></i> Detalles
+                        </a>
+                        <a href="@($"categoria/delete?idcategoria={categoria.IdCategoria}")" class="btn btn-danger ">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+                    </div>
+                </TemplateColumn>
+            </QuickGrid>
+        </div>
+    </div>
+</div>
 
 @code {
-    private List<Categoria>? categorias;
+    private DBContext context = default!;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await LoadCategoriasAsync();
+        context = DbFactory.CreateDbContext();
     }
 
-    private async Task LoadCategoriasAsync()
-    {
-        await using var context = await DbFactory.CreateDbContextAsync(); //  Crea un nuevo DbContext para cada operación
-        categorias = await context.Categoria.ToListAsync();
-        StateHasChanged(); // Actualiza la UI
-    }
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }

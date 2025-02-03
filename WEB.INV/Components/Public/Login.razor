@@ -50,12 +50,12 @@
                 if (_tokenResponse?.AccessToken is not null)
                 {
                     // Set token in LocalStorage and re-render the page
-                    
+
                     Console.WriteLine("Token guardado en LocalStorage.");
-                    
+
                     _pendingAuthToken = _tokenResponse.AccessToken;
-                    
-                    NavigationManager.NavigateTo("/");
+
+
                 }
             }
             else
@@ -68,6 +68,7 @@
             Console.WriteLine("Error: " + ex.Message);
         }
         
+
     }
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
